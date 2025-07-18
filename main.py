@@ -35,6 +35,11 @@ def transcribe():
         if os.path.exists(temp_name):
             os.remove(temp_name)
 
+# ✅ Route kiểm tra phiên bản đang chạy
+@app.route("/version")
+def version():
+    return jsonify({ "version": "2025-07-18 11h20" })
+
 # ✅ Replit sẽ tự chạy app nếu có file main.py
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
