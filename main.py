@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from faster_whisper import WhisperModel
 import os
 import uuid
 
 app = Flask(__name__)
+CORS(app)  # ✅ Cho phép mọi origin truy cập
 
-# ✅ Dùng model 'tiny' để chạy được trên Render
+# ✅ Dùng model 'tiny' để tiết kiệm RAM trên Replit
 model = WhisperModel("tiny", device="cpu", compute_type="int8")
 
 @app.route("/transcribe", methods=["POST"])
@@ -33,5 +35,6 @@ def transcribe():
         if os.path.exists(temp_name):
             os.remove(temp_name)
 
+# ✅ Replit sẽ tự chạy app nếu có file main.py
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
