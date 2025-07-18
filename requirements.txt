@@ -1,5 +1,4 @@
 flask
-openai-whisper
-torch
-ffmpeg-python
+faster-whisper
 numpy
+ctranslate2
