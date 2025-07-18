@@ -1,11 +1,11 @@
 from flask import Flask, request, jsonify
-import whisper
+from faster_whisper import WhisperModel
 import os
 
 app = Flask(__name__)
 
-# ✅ Load model Whisper (Trainer có thể dùng 'tiny' nếu muốn nhẹ hơn)
-model = whisper.load_model("base")  # hoặc 'tiny' nếu cần tiết kiệm tài nguyên
+# ✅ Dùng model 'tiny' để chạy được trên Render
+model = WhisperModel("tiny", device="cpu", compute_type="int8")
 
 @app.route("/transcribe", methods=["POST"])
 def transcribe():
@@ -17,8 +17,8 @@ def transcribe():
     file.save(filepath)
 
     try:
-        result = model.transcribe(filepath)
-        transcript = result["text"]
+        segments, info = model.transcribe(filepath)
+        transcript = " ".join([seg.text for seg in segments])
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     finally:
@@ -26,6 +26,5 @@ def transcribe():
 
     return jsonify({"transcript": transcript})
 
-# ✅ Chạy app trên port 8080 để Render nhận đúng
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
